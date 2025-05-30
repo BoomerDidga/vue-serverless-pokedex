@@ -1,48 +1,41 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png" />
-  <h2>Current Pokemon: {{ currentPokemon }}</h2>
-  <p>{{ pokemonAttributes }}</p>
+  <h1>Twitch Pokedex</h1>
+  <input type="text" v-model="filterText" />
   <ul>
-    <li
-      v-for="pokemon in pokemonList"
-      :key="`pokemon-${pokemon.entry_number}`"
-      @click="setPokemon(pokemon.pokemon_species.name)"
-    >
-      ({{ pokemon.entry_number }}): {{ pokemon.pokemon_species.name }}
-    </li>
+    <PokedexCard
+      v-for="(pokemon, index) in pokemonStore.filteredList"
+      :key="`poke-${index}`"
+      :name="pokemon.pokemon_species.name"
+      :number="pokemon.entry_number"
+    />
   </ul>
 </template>
 
-<script>
-export default {
-  name: 'App',
-  data: () => ({
-    currentPokemon: '',
-    pokemonList: {},
-    pokemonAttributes: {}
-  }),
-  methods: {
-    async setPokemon(pokemon) {
-      this.currentPokemon = pokemon
+<script setup>
+import { ref, onMounted, reactive } from 'vue'
+import PokedexCard from './components/PokedexCard.vue'
 
-      const response = await fetch('/.netlify/functions/pokemon', {
-        method: 'POST',
-        body: JSON.stringify({
-          pokemon: pokemon
-        })
-      })
-      const data = await response.json()
+const filterText = ref('')
 
-      this.pokemonAttributes = data.abilities
-    }
-  },
-  async mounted() {
-    const response = await fetch('/.netlify/functions/pokedex')
-    const pokemonData = await response.json()
+const pokemonStore = reactive({
+  list: [],
+  filteredList: computed(() => 
+    pokemonStore.list.filter(pokemon =>
+      pokemon.pokemon_species.name.includes(filterText.value)
+    )
+  )
+})
 
-    this.pokemonList = pokemonData
-  }
-}
+const pokemonList = ref([])
+onMounted(async () => {
+	const pokeData = await fetch('https://pokeapi/co/api/v2/pokedex/2/').then(response => response.json()
+	)
+
+  console.log(pokeData)
+
+	pokemonStore.list = pokeData
+})
+
 </script>
 
 <style>
