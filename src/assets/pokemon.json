@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Pikachu",
+    "imageUrl": "https://...",
+    "powerType": "Electric",
+    "elementType": "Lightning"
+  },
+  {
+    "id": 2,
+    "name": "Charmander",
+    "imageUrl": "https://...",
+    "powerType": "Fire",
+    "elementType": "Flame"
+  },
+  {
+    "id": 3,
+    "name": "Squirtle",
+    "imageUrl": "https://...",
+    "powerType": "Water",
+    "elementType": "Aqua"
+  }
+]

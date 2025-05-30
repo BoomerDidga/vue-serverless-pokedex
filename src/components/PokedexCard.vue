@@ -11,6 +11,9 @@
     <div class="pokemon-info">
       <span class="pokemon-number">#{{ number.toString().padStart(3, '0') }}</span>
       <span class="pokemon-name">{{ name }}</span>
+
+      <!-- 🆕 ปุ่มเพิ่มเข้า Group -->
+      <button class="add-btn" @click="addToGroup">➕ เพิ่มเข้า Group</button>
     </div>
   </li>
 </template>
@@ -18,7 +21,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 
-const props = defineProps({
+/*const props = defineProps({
   name: {
     type: String,
     required: true
@@ -35,6 +38,13 @@ const props = defineProps({
     type: String,
     default: null
   }
+})*/
+
+const props = defineProps({
+  name: String,
+  number: Number,
+  localImage: String,
+  spriteUrl: String
 })
 
 const imageError = ref(false)
@@ -49,10 +59,21 @@ const imageUrl = computed(() => {
 const handleImageError = () => {
   imageError.value = true
 }
+
+const addToGroup = () => {
+  emit('add-to-group', {
+    pokemon_species: { name: props.name },
+    entry_number: props.number,
+    sprite_url: props.spriteUrl,
+    local_image: props.localImage
+  })
+}
+
 </script>
 
 <style scoped>
 .pokedex-card {
+  /*
   list-style: none;
   padding: 15px;
   margin: 10px;
@@ -68,45 +89,71 @@ const handleImageError = () => {
   align-items: center;
   min-width: 200px;
   max-width: 250px;
+  */
+
+  /* ... เดิม ... */
 }
 
-.pokedex-card:hover {
+/*.pokedex-card:hover {
   background-color: #f8f9fa;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0,0,0,0.15);
   border-color: #007bff;
-}
+}*/
 
-.pokemon-image {
+/*.pokemon-image {
   margin-bottom: 10px;
-}
+}*/
 
-.pokemon-img {
+/*.pokemon-img {
   width: 120px;
   height: 120px;
   object-fit: contain;
   border-radius: 8px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   padding: 10px;
-}
+}*/
 
-.pokemon-info {
+/*.pokemon-info {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
-}
+}*/
 
-.pokemon-number {
+/*.pokemon-number {
   font-size: 14px;
   color: #666;
   font-weight: bold;
-}
+}*/
 
-.pokemon-name {
+/*.pokemon-name {
   font-size: 16px;
   font-weight: bold;
   color: #333;
   text-transform: capitalize;
+}*/
+
+.pokemon-info {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.add-btn {
+  margin-top: 10px;
+  background: #007bff;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-btn:hover {
+  background: #0056b3;
 }
 </style>

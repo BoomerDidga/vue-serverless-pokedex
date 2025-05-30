@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <h1>Twitch Pokedex</h1>
+    <!--<h1>Twitch Pokedex</h1>
     <input type="text" v-model="filterText" />
     <div class="pokemon-grid">
       <PokedexCard
@@ -11,6 +11,31 @@
         :local-image="pokemon.local_image"
         :sprite-url="pokemon.sprite_url"
       />
+    </div>-->
+
+    <h1>Twitch Pokedex Panel</h1>
+    <div class="container">
+      <!-- 🔹 ซ้าย: Search List -->
+      <div class="left-pane">
+        <input type="text" v-model="filterText" placeholder="ค้นหาโปเกม่อน" />
+        <div class="pokemon-grid">
+          <PokedexCard
+            v-for="(pokemon, index) in pokemonStore.filteredList"
+            :key="`poke-${index}`"
+            :name="pokemon.pokemon_species.name"
+            :number="pokemon.entry_number"
+            :local-image="pokemon.local_image"
+            :sprite-url="pokemon.sprite_url"
+          />
+        </div>
+      </div>
+
+      <!-- 🔹 ขวา: Group Management (เตรียมไว้ก่อน) -->
+      <div class="right-pane">
+        <h2>🎴 Pokémon Groups</h2>
+        <p>คุณสามารถจัดกลุ่มโปเกม่อนได้ที่นี่</p>
+        <!-- กลุ่มจะมาแสดงตรงนี้ในอนาคต -->
+      </div>
     </div>
   </div>
 </template>
@@ -77,14 +102,33 @@ h1 {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
+.container {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+}
+
+.left-pane, .right-pane {
+  width: 50%;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  overflow-y: auto;
+}
+
 input[type="text"] {
   padding: 12px 20px;
   font-size: 16px;
   border: none;
   border-radius: 25px;
-  width: 300px;
-  max-width: 90%;
-  margin-bottom: 30px;
+  width: 90%;
+  max-width: 20px;
+  /*margin-bottom: 30px; */
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   outline: none;
   transition: box-shadow 0.3s ease;
@@ -96,26 +140,34 @@ input[type="text"]:focus {
 
 .pokemon-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  max-width: 1200px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+  /*max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 20px;*/
 }
 
 @media (max-width: 768px) {
-  .pokemon-grid {
+  /*.pokemon-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
     padding: 10px;
+  }*/
+
+  .container {
+    flex-direction: column;
   }
 
   h1 {
     font-size: 2rem;
   }
 
-  input[type="text"] {
-    width: 250px;
+  .left-pane, .right-pane {
+    width: 100%;
   }
+
+  /*input[type="text"] {
+    width: 250px;
+  }*/
 }
 </style>
