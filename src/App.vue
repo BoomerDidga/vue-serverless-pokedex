@@ -26,6 +26,7 @@
             :number="pokemon.entry_number"
             :local-image="pokemon.local_image"
             :sprite-url="pokemon.sprite_url"
+            @add-to-group="handleAddToGroup(pokemon)"
           />
         </div>
       </div>
@@ -35,6 +36,21 @@
         <h2>🎴 Pokémon Groups</h2>
         <p>คุณสามารถจัดกลุ่มโปเกม่อนได้ที่นี่</p>
         <!-- กลุ่มจะมาแสดงตรงนี้ในอนาคต -->
+        <form @submit.prevent="createGroup">
+          <input v-model="newGroupName" placeholder="ตั้งชื่อกลุ่มใหม่" />
+          <button type="submit">➕ สร้างกลุ่ม</button>
+        </form>
+        <div v-if="Object.keys(groupStore.groups).length === 0">
+          <p>ยังไม่มีกลุ่ม กรุณาสร้างกลุ่มก่อน</p>
+        </div>
+        <div v-for="(pokemons, groupName) in groupStore.groups" :key="groupName" class="group-box">
+          <h3>{{ groupName }}</h3>
+          <ul>
+            <li v-for="poke in pokemons" :key="poke.entry_number">
+              {{ poke.pokemon_species.name }} (#{{ poke.entry_number }})
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -43,8 +59,10 @@
 <script setup>
 import { ref, onMounted, reactive, computed } from 'vue'
 import PokedexCard from './components/PokedexCard.vue'
+import { groupStore } from './stores/groupStore.js'
 
 const filterText = ref('')
+const newGroupName = ref('')
 
 const pokemonStore = reactive({
   list: [],
@@ -81,6 +99,25 @@ onMounted(async () => {
     console.error('Error fetching Pokemon:', error)
   }
 })
+
+function createGroup() {
+  if (!newGroupName.value.trim()) return
+  groupStore.addGroup(newGroupName.value.trim())
+  newGroupName.value = ''
+}
+
+function handleAddToGroup(pokemon) {
+  const groupNames = Object.keys(groupStore.groups)
+  if (groupNames.length === 0) {
+    alert('กรุณาสร้างกลุ่มก่อน')
+    return
+  }
+  const selectedGroup = prompt('เพิ่มเข้า Group ไหน?', groupNames[0])
+  if (selectedGroup && groupStore.groups[selectedGroup]) {
+    groupStore.addToGroup(selectedGroup, pokemon)
+  }
+}
+
 </script>
 
 <style>
@@ -103,13 +140,9 @@ h1 {
 }
 
 .container {
-
   display: flex;
-
   justify-content: space-between;
-
   gap: 20px;
-
 }
 
 .left-pane, .right-pane {
@@ -127,7 +160,8 @@ input[type="text"] {
   border: none;
   border-radius: 25px;
   width: 90%;
-  max-width: 20px;
+  margin-bottom: 20px;
+  /*max-width: 20px; */
   /*margin-bottom: 30px; */
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   outline: none;
@@ -145,6 +179,27 @@ input[type="text"]:focus {
   /*max-width: 1200px;
   margin: 0 auto;
   padding: 20px;*/
+}
+
+.group-box {
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.group-box h3 {
+  margin: 0 0 8px;
+}
+
+.group-box ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.group-box li {
+  padding: 2px 0;
 }
 
 @media (max-width: 768px) {

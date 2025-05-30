@@ -21,6 +21,8 @@
 <script setup>
 import { computed, ref } from 'vue'
 
+const emit = defineEmits(['add-to-group'])
+
 /*const props = defineProps({
   name: {
     type: String,
