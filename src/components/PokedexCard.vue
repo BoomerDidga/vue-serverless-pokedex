@@ -14,14 +14,18 @@
 
       <!-- 🆕 ปุ่มเพิ่มเข้า Group -->
       <button class="add-btn" @click="addToGroup">➕ เพิ่มเข้า Group</button>
+
+      <!-- ✅ ปุ่มดูรายละเอียด -->
+      <button class="view-btn" @click="viewDetail">👁️ ดูรายละเอียด</button>
     </div>
   </li>
 </template>
 
 <script setup>
 import { computed, ref } from 'vue'
+import { defineEmits } from 'vue'
 
-const emit = defineEmits(['add-to-group'])
+const emit = defineEmits(['add-to-group', 'view-detail'])
 
 /*const props = defineProps({
   name: {
@@ -64,6 +68,15 @@ const handleImageError = () => {
 
 const addToGroup = () => {
   emit('add-to-group', {
+    pokemon_species: { name: props.name },
+    entry_number: props.number,
+    sprite_url: props.spriteUrl,
+    local_image: props.localImage
+  })
+}
+
+const viewDetail = () => {
+  emit('view-detail', {
     pokemon_species: { name: props.name },
     entry_number: props.number,
     sprite_url: props.spriteUrl,
@@ -138,9 +151,11 @@ const addToGroup = () => {
 
 .pokemon-info {
   display: flex;
-  gap: 6px;
-  justify-content: center;
+  /*gap: 6px;*/
+  flex-direction: column;
+  /*justify-content: center;*/
   align-items: center;
+  gap: 6px;
 }
 
 .add-btn {
@@ -158,4 +173,21 @@ const addToGroup = () => {
 .add-btn:hover {
   background: #0056b3;
 }
+
+.view-btn {
+  margin-top: 5px;
+  background: #28a745;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.view-btn:hover {
+  background: #1e7e34;
+}
+
 </style>
