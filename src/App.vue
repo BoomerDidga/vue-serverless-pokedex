@@ -104,9 +104,18 @@ const selectedGroupName = ref('')
 const pokemonStore = reactive({
   list: [],
   filteredList: computed(() =>
-    pokemonStore.list.filter(pokemon =>
-      pokemon.pokemon_species.name.includes(filterText.value)
-    )
+    //pokemonStore.list.filter(pokemon =>
+      //pokemon.pokemon_species.name.includes(filterText.value)
+      //pokemon.pokemon_species.name.includes(filterText.value.toLowerCase()) ||
+      //pokemon.entry_number.toString().includes(filterText.value)
+    //)
+    pokemonStore.list.filter(pokemon => {
+      const name = pokemon.pokemon_species.name.toLowerCase()
+      const number = pokemon.entry_number.toString()
+      const padded = number.padStart(3, '0')
+      const query = filterText.value.toLowerCase()
+      return name.includes(query) || number.includes(query) || padded.includes(query)
+    })
   )
 })
 
