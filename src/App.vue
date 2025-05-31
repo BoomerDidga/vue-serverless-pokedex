@@ -119,21 +119,35 @@ onMounted(async () => {
     try {
       response = await fetch('/.netlify/functions/pokedex')
       pokeData = await response.json()
-      pokemonStore.list = pokeData
-    } catch (netlifyError) {
+    } catch {
+      const res = await fetch('https://pokeapi.co/api/v2/pokedex/2/')
+      const apiData = await res.json()
+
+      //pokemonStore.list = pokeData
+      // Sync editableNames หลังโหลดกลุ่มจาก localStorage
+      //for (const name of Object.keys(groupStore.groups)) {
+        //editableNames[name] = name
+      //}
+    //} catch (netlifyError) {
       //console.warn('Netlify function not available, using direct API call:', netlifyError)
       // Fallback to direct API call
-      response = await fetch('https://pokeapi.co/api/v2/pokedex/2/')
-      const apiData = await response.json()
+      //response = await fetch('https://pokeapi.co/api/v2/pokedex/2/')
+      //const apiData = await response.json()
       // Transform the data to match our expected format
+
       pokemonStore.list = apiData.pokemon_entries.map(pokemon => ({
         ...pokemon,
         local_image: null,
         sprite_url: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.entry_number}.png`
       }))
     }
-  } catch (error) {
-    console.error('Error fetching Pokemon:', error)
+
+    // ✅ หลังจากโหลดเสร็จ → sync editableNames
+    for (const name of Object.keys(groupStore.groups)) {
+      editableNames[name] = name
+    }
+  } catch (err) {
+    console.error('Error fetching Pokemon:', err)
   }
 })
 
@@ -141,7 +155,12 @@ function createGroup() {
   /*if (!newGroupName.value.trim()) return
   groupStore.addGroup(newGroupName.value.trim())*/
   const name = newGroupName.value.trim()
-  if (!name || groupStore.groups[name]) return
+  //if (!name || groupStore.groups[name]) return
+  if (!name) return
+  if (groupStore.groups[name]) {
+    alert(`มีกลุ่มชื่อ "${name}" อยู่แล้ว กรุณาตั้งชื่อใหม่`)
+    return
+  }
   groupStore.addGroup(name)
   groupStore.groups = { ...groupStore.groups } // trigger reactivity
   editableNames[name] = name
